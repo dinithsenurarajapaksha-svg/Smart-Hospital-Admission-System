@@ -1,4 +1,13 @@
 bin/
 obj/
-*.exe
 *.o
+*.obj
+*.d
+*.exe
+*.out
+*.lib
+*.a
+*.dll
+*.so
+*.pdb
+*.idb
