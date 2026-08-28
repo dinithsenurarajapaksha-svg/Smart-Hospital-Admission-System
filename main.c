@@ -24,6 +24,11 @@ int admissionDays[MAX_PATIENTS];
 
 float finalBills[MAX_PATIENTS];
 float waitingTimes[MAX_PATIENTS];
+float emergencySurcharges[MAX_PATIENTS];
+float wardCosts[MAX_PATIENTS];
+float grossTotals[MAX_PATIENTS];
+float discounts[MAX_PATIENTS];
+float finalPayableAmounts[MAX_PATIENTS];
 
 char specialtyNames[TOTAL_SPECIALTIES][30];
 float consultationFees[TOTAL_SPECIALTIES];
@@ -35,13 +40,27 @@ char wardNames[TOTAL_WARDS][30];
 float wardDailyRates[TOTAL_WARDS];
 int wardCapacities[TOTAL_WARDS];
 
+void displayTitle();
+void displayMenu();
+
 void initializeBeds();
+void initializeSpecialties();
+void initializeWards();
+
+void registerPatient();
 void viewPatients();
 void searchPatient();
 void viewBedStatus();
-int assignBed();
-void initializeSpecialties();
-void initializeWards();
+
+int assignBed(int wardID);
+
+float calculateEmergencySurcharge(float baseFee, int urgencyLevel);
+float calculateWardCost(int wardID, int admissionDays);
+float calculateGrossTotal(float baseFee,
+                          float emergencySurcharge,
+                          float wardCost);
+float calculateAgeDiscount(float grossTotal, int age);
+float calculateFinalPayable(float grossTotal, float discount);
 
 int main(){
         int choice ;
@@ -243,6 +262,10 @@ int main(){
 
            specialtyQueueCounts[specialtyIndex]++;
 
+          emergencySurcharges[totalPatients] =
+          calculateEmergencySurcharge(
+          consultationFees[specialtyIndex],
+          urgencyLevels[totalPatients] );
 
      int admitted;
 
@@ -250,54 +273,87 @@ int main(){
            scanf("%d", &admitted);
 
      if(admitted == 1)
-      {
-        do
-            {
-             printf("Enter Ward ID (1-4): ");
-             scanf("%d", &assignedWards[totalPatients]);
+        {
+         do
+           {
+            printf("Enter Ward ID (1-4): ");
+            scanf("%d", &assignedWards[totalPatients]);
 
-             if(assignedWards[totalPatients] < 1 ||
+           if(assignedWards[totalPatients] < 1 ||
               assignedWards[totalPatients] > TOTAL_WARDS)
-            {
-               printf("Invalid Ward ID! Please enter 1-4.\n");
-             }
+         {
+            printf("Invalid Ward ID! Please enter 1-4.\n");
+           }
 
-          } while(assignedWards[totalPatients] < 1 ||
-             assignedWards[totalPatients] > TOTAL_WARDS);
+      } while(assignedWards[totalPatients] < 1 ||
+              assignedWards[totalPatients] > TOTAL_WARDS);
 
 
-    do
-      {
-           printf("Enter Number of Days Admitted: ");
-           scanf("%d", &admissionDays[totalPatients]);
+     do
+       {
+        printf("Enter Number of Days Admitted: ");
+        scanf("%d", &admissionDays[totalPatients]);
 
-            if(admissionDays[totalPatients] <= 0)
-              {
-                printf("Invalid number of days! Please enter a positive value.\n");
-              }
+        if(admissionDays[totalPatients] <= 0)
+         {
+            printf("Invalid number of days! Please enter a positive value.\n");
+         }
 
        } while(admissionDays[totalPatients] <= 0);
 
 
-          assignedBeds[totalPatients] =
-          assignBed(assignedWards[totalPatients]);
+        assignedBeds[totalPatients] =
+        assignBed(assignedWards[totalPatients]);
 
-        if(assignedBeds[totalPatients] == -1)
-         {
-          printf("No available bed in this ward.\n");
-          assignedBeds[totalPatients] = 0;
-          }
-       }
-       else
-            {
-              assignedWards[totalPatients] = 0;
-              admissionDays[totalPatients] = 0;
-              assignedBeds[totalPatients] = 0;
-             }
+    if(assignedBeds[totalPatients] == -1)
+     {
+        printf("No available bed in this ward.\n");
+        assignedBeds[totalPatients] = 0;
+      }
+
+       wardCosts[totalPatients] =
+            calculateWardCost(
+            assignedWards[totalPatients],
+            admissionDays[totalPatients]);
+
+        }
+   else
+    {
+      assignedWards[totalPatients] = 0;
+      admissionDays[totalPatients] = 0;
+      assignedBeds[totalPatients] = 0;
+      wardCosts[totalPatients] = 0.0;
+     }
+
+     grossTotals[totalPatients] =
+        calculateGrossTotal(
+        consultationFees[specialtyIndex],
+        emergencySurcharges[totalPatients],
+        wardCosts[totalPatients] ) ;
+
+     discounts[totalPatients] =
+        calculateAgeDiscount(
+        grossTotals[totalPatients],
+        patientAges[totalPatients] );
+
+     finalPayableAmounts[totalPatients] =
+        calculateFinalPayable(
+        grossTotals[totalPatients],
+        discounts[totalPatients] );
 
          printf("\nPatient Registered Successfully!\n");
          printf("Estimated Waiting Time: %.2f minutes\n",
                   waitingTimes[totalPatients]);
+         printf("Emergency Surcharge: LKR %.2f\n",
+                 emergencySurcharges[totalPatients]);
+         printf("Ward Stay Cost: LKR %.2f\n",
+                  wardCosts[totalPatients]);
+         printf("Gross Total: LKR %.2f\n", grossTotals[totalPatients]);
+
+         printf("Age Subsidy Discount: LKR %.2f\n",
+                 discounts[totalPatients]);
+         printf("Final Payable Amount: LKR %.2f\n",
+                finalPayableAmounts[totalPatients]);
 
          totalPatients++;
    }
@@ -386,7 +442,55 @@ int main(){
     }
   }
 
+  float calculateEmergencySurcharge(float baseFee, int urgencyLevel)
+  {
+     if(urgencyLevel == 2)
+       {
+         return baseFee * 0.20;
+         }
+    else if(urgencyLevel == 3)
+      {
+         return baseFee * 0.50;
+        }
+    else
+     {
+        return 0.0;
+     }
+   }
 
+   float calculateWardCost(int wardID, int admissionDays)
+   {
+     if(wardID == 0 || admissionDays == 0)
+     {
+        return 0.0;
+      }
+
+        return admissionDays * wardDailyRates[wardID - 1];
+     }
+
+     float calculateGrossTotal(float baseFee,
+                          float emergencySurcharge,
+                          float wardCost)
+         {
+           return baseFee + emergencySurcharge + wardCost;
+              }
+
+    float calculateAgeDiscount(float grossTotal, int age)
+   {
+      if(age < 5 || age > 65)
+       {
+        return grossTotal * 0.15;
+         }
+     else
+      {
+        return 0.0;
+        }
+    }
+
+    float calculateFinalPayable(float grossTotal, float discount)
+      {
+        return grossTotal - discount;
+      }
 
 
 
