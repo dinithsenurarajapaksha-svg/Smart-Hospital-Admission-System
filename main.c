@@ -190,21 +190,48 @@ int main(){
        printf("Enter Patient Age : ");
        scanf("%d", &patientAges[totalPatients]);
 
-       printf("\nEnter Urgency Level (1-Emergency, 2-Normal): ");
-       scanf("%d", &urgencyLevels[totalPatients]);
+       do
+     {
+        printf("\nEnter Urgency Level:\n");
+        printf("1. Normal\n");
+        printf("2. Urgent\n");
+        printf("3. Critical\n");
+        printf("Enter your choice (1-3): ");
 
-       printf("\nAvailable Specialties:\n");
+        scanf("%d", &urgencyLevels[totalPatients]);
 
-       for(int i = 0; i < TOTAL_SPECIALTIES; i++)
+      if(urgencyLevels[totalPatients] < 1 ||
+         urgencyLevels[totalPatients] > 3)
       {
-       printf("%d. %s - LKR %.2f\n",
-           i + 1,
-           specialtyNames[i],
-           consultationFees[i]);
-      }
+         printf("Invalid urgency level! Please enter 1-3.\n");
+       }
 
-       printf("Enter Specialty ID (1-4): ");
-       scanf("%d", &specialties[totalPatients]);
+      } while(urgencyLevels[totalPatients] < 1 ||
+         urgencyLevels[totalPatients] > 3);
+
+        printf("\nAvailable Specialties:\n");
+
+        for(int i = 0; i < TOTAL_SPECIALTIES; i++)
+        {
+          printf("%d. %s - LKR %.2f\n",
+                    i + 1,
+                  specialtyNames[i],
+                  consultationFees[i]);
+          }
+
+        do
+          {
+            printf("Enter Specialty ID (1-4): ");
+            scanf("%d", &specialties[totalPatients]);
+
+           if(specialties[totalPatients] < 1 ||
+              specialties[totalPatients] > TOTAL_SPECIALTIES)
+           {
+                printf("Invalid Specialty ID! Please enter 1-4.\n");
+            }
+
+        } while(specialties[totalPatients] < 1 ||
+                specialties[totalPatients] > TOTAL_SPECIALTIES);
 
 
      int admitted;
