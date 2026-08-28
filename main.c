@@ -23,11 +23,13 @@ int assignedWards[MAX_PATIENTS];
 int admissionDays[MAX_PATIENTS];
 
 float finalBills[MAX_PATIENTS];
+float waitingTimes[MAX_PATIENTS];
 
 char specialtyNames[TOTAL_SPECIALTIES][30];
 float consultationFees[TOTAL_SPECIALTIES];
 int specialtyTimes[TOTAL_SPECIALTIES];
 int dailyPatientCaps[TOTAL_SPECIALTIES];
+int specialtyQueueCounts[TOTAL_SPECIALTIES] = {0};
 
 char wardNames[TOTAL_WARDS][30];
 float wardDailyRates[TOTAL_WARDS];
@@ -233,6 +235,14 @@ int main(){
         } while(specialties[totalPatients] < 1 ||
                 specialties[totalPatients] > TOTAL_SPECIALTIES);
 
+        int specialtyIndex = specialties[totalPatients] - 1;
+
+           waitingTimes[totalPatients] =
+           specialtyQueueCounts[specialtyIndex] *
+           specialtyTimes[specialtyIndex];
+
+           specialtyQueueCounts[specialtyIndex]++;
+
 
      int admitted;
 
@@ -285,10 +295,12 @@ int main(){
               assignedBeds[totalPatients] = 0;
              }
 
-         totalPatients++;
+         printf("\nPatient Registered Successfully!\n");
+         printf("Estimated Waiting Time: %.2f minutes\n",
+                  waitingTimes[totalPatients]);
 
-          printf("Patient Registered Successfully!\n");
-  }
+         totalPatients++;
+   }
 
    void viewPatients()
  {
