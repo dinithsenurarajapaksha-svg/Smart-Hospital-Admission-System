@@ -206,40 +206,62 @@ int main(){
        printf("Enter Specialty ID (1-4): ");
        scanf("%d", &specialties[totalPatients]);
 
-       if(admissionDays[totalPatients] > 0)
-     {
-    assignedBeds[totalPatients] = assignBed(assignedWards[totalPatients]);
-      }
+
+     int admitted;
+
+           printf("\nIs the patient admitted to a ward? (1-Yes, 0-No): ");
+           scanf("%d", &admitted);
+
+     if(admitted == 1)
+      {
+        do
+            {
+             printf("Enter Ward ID (1-4): ");
+             scanf("%d", &assignedWards[totalPatients]);
+
+             if(assignedWards[totalPatients] < 1 ||
+              assignedWards[totalPatients] > TOTAL_WARDS)
+            {
+               printf("Invalid Ward ID! Please enter 1-4.\n");
+             }
+
+          } while(assignedWards[totalPatients] < 1 ||
+             assignedWards[totalPatients] > TOTAL_WARDS);
+
+
+    do
+      {
+           printf("Enter Number of Days Admitted: ");
+           scanf("%d", &admissionDays[totalPatients]);
+
+            if(admissionDays[totalPatients] <= 0)
+              {
+                printf("Invalid number of days! Please enter a positive value.\n");
+              }
+
+       } while(admissionDays[totalPatients] <= 0);
+
+
+          assignedBeds[totalPatients] =
+          assignBed(assignedWards[totalPatients]);
+
+        if(assignedBeds[totalPatients] == -1)
+         {
+          printf("No available bed in this ward.\n");
+          assignedBeds[totalPatients] = 0;
+          }
+       }
        else
-     {
-    assignedBeds[totalPatients] = 0;
-      }
+            {
+              assignedWards[totalPatients] = 0;
+              admissionDays[totalPatients] = 0;
+              assignedBeds[totalPatients] = 0;
+             }
 
-totalPatients++;
+         totalPatients++;
 
-       int admitted;
-
-       printf("\nIs the patient admitted to a ward? (1-Yes, 0-No): ");
-       scanf("%d", &admitted);
-
-       if(admitted == 1)
-    {
-       printf("Enter Ward ID (1-4): ");
-       scanf("%d", &assignedWards[totalPatients]);
-
-    printf("Enter Number of Days Admitted: ");
-    scanf("%d", &admissionDays[totalPatients]);
-    }
-    else
-    {
-    assignedWards[totalPatients] = 0;
-    admissionDays[totalPatients] = 0;
-    }
-
-       totalPatients++;
-
-       printf("Patient Registered Successfully!\n");
-      }
+          printf("Patient Registered Successfully!\n");
+  }
 
    void viewPatients()
  {
@@ -324,6 +346,8 @@ totalPatients++;
         }
     }
   }
+
+
 
 
 
