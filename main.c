@@ -63,6 +63,7 @@ float calculateAgeDiscount(float grossTotal, int age);
 float calculateFinalPayable(float grossTotal, float discount);
 
 void displayPatientBill(int patientIndex);
+void displayPatientsByPriority();
 
 int main(){
         int choice ;
@@ -96,16 +97,20 @@ int main(){
         break;
 
     case 5:
-        printf("\nPerformance Reports selected.\n");
+        displayPatientsByPriority();
         break;
 
     case 6:
+        printf("\nPerformance Reports selected.\n");
+        break;
+
+    case 7:
         printf("\nThank you for using Smart Hospital Admission System.\n");
         break;
 
     default:
         printf("\nInvalid Choice! Please try again.\n");
-    } } while(choice != 6);
+    } } while(choice != 7);
 
 
         return 0 ;
@@ -118,13 +123,13 @@ int main(){
  }
    void displayMenu()
   {
-    printf("\n");
     printf("1. Register Patient\n");
     printf("2. View Patients\n");
     printf("3. Search Patient\n");
     printf("4. View Bed Status\n");
-    printf("5. Generate Bill\n");
-    printf("6. Exit\n");
+    printf("5. View Patients by Priority\n");
+    printf("6. Generate Performance Reports\n");
+    printf("7. Exit\n");
 
     printf("\nEnter your choice: ");
   }
@@ -391,7 +396,49 @@ int main(){
        printf("\nAssigned Bed : %d\n", assignedBeds[i]);
     }
   }
+   void displayPatientsByPriority()
+ {
+    if(totalPatients == 0)
+    {
+        printf("\nNo patients registered yet.\n");
+        return;
+    }
 
+    int priorityOrder[MAX_PATIENTS];
+
+    // Store original patient indices
+    for(int i = 0; i < totalPatients; i++)
+    {
+        priorityOrder[i] = i;
+    }
+
+    // Bubble Sort by urgency level (3 -> 2 -> 1)
+    for(int i = 0; i < totalPatients - 1; i++)
+    {
+        for(int j = 0; j < totalPatients - i - 1; j++)
+        {
+            if(urgencyLevels[priorityOrder[j]] <
+               urgencyLevels[priorityOrder[j + 1]])
+            {
+                int temp = priorityOrder[j];
+                priorityOrder[j] = priorityOrder[j + 1];
+                priorityOrder[j + 1] = temp;
+            }
+        }
+    }
+
+    printf("\n===== PATIENT PRIORITY LIST =====\n");
+
+    for(int i = 0; i < totalPatients; i++)
+    {
+        int index = priorityOrder[i];
+
+        printf("\nPriority %d\n", i + 1);
+        printf("Patient ID   : PAT-%d\n", patientIDs[index]);
+        printf("Patient Name : %s\n", patientNames[index]);
+        printf("Urgency Level: %d\n", urgencyLevels[index]);
+    }
+ }
   void searchPatient()
  {
     int searchID;
