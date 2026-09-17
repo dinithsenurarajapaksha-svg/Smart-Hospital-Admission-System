@@ -64,6 +64,7 @@ float calculateFinalPayable(float grossTotal, float discount);
 
 void displayPatientBill(int patientIndex);
 void displayPatientsByPriority();
+void generatePerformanceReport();
 
 int main(){
         int choice ;
@@ -101,7 +102,7 @@ int main(){
         break;
 
     case 6:
-        printf("\nPerformance Reports selected.\n");
+        generatePerformanceReport();
         break;
 
     case 7:
@@ -624,5 +625,93 @@ int main(){
     printf("====================================================\n");
  }
 
+ void generatePerformanceReport()
+ {
+    int normalCount = 0;
+    int urgentCount = 0;
+    int criticalCount = 0;
 
+    float totalRevenue = 0.0;
+    float totalDiscounts = 0.0;
+
+    for(int i = 0; i < totalPatients; i++)
+    {
+        if(urgencyLevels[i] == 1)
+        {
+            normalCount++;
+        }
+        else if(urgencyLevels[i] == 2)
+        {
+            urgentCount++;
+        }
+        else if(urgencyLevels[i] == 3)
+        {
+            criticalCount++;
+        }
+         totalRevenue += finalPayableAmounts[i];
+         totalDiscounts += discounts[i];
+
+   printf("\nTotal Revenue Earned : LKR %.2f\n", totalRevenue);
+   printf("Total Discounts Granted : LKR %.2f\n", totalDiscounts);
+    }
+
+
+    printf("\n========================================\n");
+    printf("       PERFORMANCE REPORT\n");
+    printf("========================================\n");
+
+    printf("\nTotal Patients Registered : %d\n", totalPatients);
+
+    printf("\nPatients by Urgency Level:\n");
+    printf("Level 3 (Critical) : %d\n", criticalCount);
+    printf("Level 2 (Urgent)   : %d\n", urgentCount);
+    printf("Level 1 (Normal)   : %d\n", normalCount);
+
+    printf("========================================\n");
+
+    printf("\nBed Occupancy Percentage:\n");
+
+    for(int i = 0; i < TOTAL_WARDS; i++)
+    {
+       int occupiedBeds = 0;
+
+      for(int j = 0; j < wardCapacities[i]; j++)
+         {
+            if(bedOccupancy[i][j] == 1)
+           {
+                occupiedBeds++;
+             }
+          }
+
+    float occupancyPercentage =
+                                ((float)occupiedBeds / wardCapacities[i]) * 100;
+
+          printf("%s : %d/%d beds occupied (%.2f%%)\n",
+           wardNames[i],
+           occupiedBeds,
+           wardCapacities[i],
+           occupancyPercentage);
+       }
+    int highestPatientIndex = 0;
+
+     if(totalPatients > 0)
+      {
+         for(int i = 1; i < totalPatients; i++)
+           {
+             if(finalPayableAmounts[i] >
+                  finalPayableAmounts[highestPatientIndex])
+             {
+                   highestPatientIndex = i;
+              }
+           }
+
+      printf("\nHighest-Paying Patient:\n");
+      printf("Patient ID   : PAT-%d\n",
+           patientIDs[highestPatientIndex]);
+      printf("Patient Name : %s\n",
+           patientNames[highestPatientIndex]);
+      printf("Total Bill   : LKR %.2f\n",
+              finalPayableAmounts[highestPatientIndex]);
+     }
+  }
 
