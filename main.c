@@ -264,6 +264,14 @@ int main(){
 
         int specialtyIndex = specialties[totalPatients] - 1;
 
+         if(specialtyQueueCounts[specialtyIndex] >= dailyPatientCaps[specialtyIndex])
+          {
+             printf("\nDaily patient capacity reached for %s.\n",
+             specialtyNames[specialtyIndex]);
+
+                      return;
+           }
+
            waitingTimes[totalPatients] =
            specialtyQueueCounts[specialtyIndex] *
            specialtyTimes[specialtyIndex];
@@ -387,16 +395,21 @@ int main(){
        printf("\nUrgency Level : ");
 
        if (urgencyLevels[i] == 1)
-          {
-            printf("Emergency");
-             }
-      else
          {
-            printf("Normal");
-            }
-       printf("\nAssigned Bed : %d\n", assignedBeds[i]);
-    }
-  }
+          printf("Level 1 (Normal)");
+          }
+      else if (urgencyLevels[i] == 2)
+        {
+          printf("Level 2 (Urgent)");
+         }
+       else
+        {
+         printf("Level 3 (Critical)");
+         }
+
+      printf("\nAssigned Bed : %d\n", assignedBeds[i]);
+     }
+   }
    void displayPatientsByPriority()
  {
     if(totalPatients == 0)
@@ -457,6 +470,20 @@ int main(){
              printf("\nPatient ID   : %d", patientIDs[i]);
              printf("\nPatient Name : %s", patientNames[i]);
              printf("\nPatient Age  : %d", patientAges[i]);
+             printf("\nUrgency Level : ");
+
+           if (urgencyLevels[i] == 1)
+            {
+                printf("Level 1 (Normal)");
+             }
+           else if (urgencyLevels[i] == 2)
+           {
+                printf("Level 2 (Urgent)");
+             }
+           else
+           {
+               printf("Level 3 (Critical)");
+            }
              printf("\nAssigned Bed : %d\n", assignedBeds[i]);
 
             found = 1;
