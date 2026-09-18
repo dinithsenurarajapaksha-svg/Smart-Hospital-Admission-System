@@ -216,8 +216,19 @@ int main(){
        printf("Enter Patient Name : ");
        scanf(" %49[^\n]", patientNames[totalPatients]);
 
-       printf("Enter Patient Age : ");
-       scanf("%d", &patientAges[totalPatients]);
+       do
+     {
+        printf("Enter Patient Age (0-120): ");
+        scanf("%d", &patientAges[totalPatients]);
+
+       if(patientAges[totalPatients] < 0 ||
+                patientAges[totalPatients] > 120)
+       {
+         printf("Invalid age! Please enter an age between 0 and 120.\n");
+        }
+
+    } while(patientAges[totalPatients] < 0 ||
+            patientAges[totalPatients] > 120);
 
        do
      {
@@ -285,8 +296,17 @@ int main(){
 
      int admitted;
 
-           printf("\nIs the patient admitted to a ward? (1-Yes, 0-No): ");
-           scanf("%d", &admitted);
+     do
+      {
+       printf("\nIs the patient admitted to a ward? (1-Yes, 0-No): ");
+       scanf("%d", &admitted);
+
+    if(admitted != 0 && admitted != 1)
+       {
+        printf("Invalid choice! Please enter 1 or 0.\n");
+        }
+
+     } while(admitted != 0 && admitted != 1);
 
      if(admitted == 1)
         {
