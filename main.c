@@ -653,19 +653,49 @@ int main(){
     printf("Base Consultation Fee : LKR %.2f\n",
            consultationFees[specialtyIndex]);
 
-    printf("Emergency Surcharge : LKR %.2f\n",
+    if(urgencyLevels[patientIndex] == 2)
+    {
+      printf("Emergency Surcharge : LKR %.2f (20%%)\n",
            emergencySurcharges[patientIndex]);
+     }
+    else if(urgencyLevels[patientIndex] == 3)
+     {
+      printf("Emergency Surcharge : LKR %.2f (50%%)\n",
+               emergencySurcharges[patientIndex]);
+      }
+    else
+    {
+      printf("Emergency Surcharge : LKR %.2f (0%%)\n",
+           emergencySurcharges[patientIndex]);
+     }
 
-    printf("Ward Stay Cost : LKR %.2f\n",
-           wardCosts[patientIndex]);
+    if(assignedWards[patientIndex] != 0)
+    {
+     printf("Ward Stay Cost (%d Days) : LKR %.2f\n",
+              admissionDays[patientIndex],
+              wardCosts[patientIndex]);
+     }
+   else
+    {
+      printf("Ward Stay Cost : LKR %.2f\n",
+              wardCosts[patientIndex]);
+      }
 
     printf("----------------------------------------------------\n");
 
     printf("Gross Total Bill : LKR %.2f\n",
            grossTotals[patientIndex]);
 
-    printf("Age Subsidy Discount : LKR -%.2f\n",
-           discounts[patientIndex]);
+    if(discounts[patientIndex] > 0)
+     {
+       printf("Age Subsidy Discount : LKR -%.2f (15%%)\n",
+                discounts[patientIndex]);
+      }
+    else
+    {
+       printf("Age Subsidy Discount : LKR %.2f\n",
+               discounts[patientIndex]);
+     }
 
     printf("----------------------------------------------------\n");
 
