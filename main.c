@@ -677,11 +677,9 @@ int main(){
         }
          totalRevenue += finalPayableAmounts[i];
          totalDiscounts += discounts[i];
-
-   printf("\nTotal Revenue Earned : LKR %.2f\n", totalRevenue);
-   printf("Total Discounts Granted : LKR %.2f\n", totalDiscounts);
-    }
-
+     }
+    printf("\nTotal Revenue Earned : LKR %.2f\n", totalRevenue);
+    printf("Total Discounts Granted : LKR %.2f\n", totalDiscounts);
 
     printf("\n========================================\n");
     printf("       PERFORMANCE REPORT\n");
