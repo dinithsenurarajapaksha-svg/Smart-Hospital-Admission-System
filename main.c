@@ -66,12 +66,15 @@ void displayPatientBill(int patientIndex);
 void displayPatientsByPriority();
 void generatePerformanceReport();
 void savePatientRecord(int patientIndex);
+void saveBedStatus();
+void loadBedStatus();
 
 int main(){
         int choice ;
         initializeBeds();
         initializeSpecialties();
         initializeWards();
+        loadBedStatus();
 
         do
      {
@@ -400,6 +403,7 @@ int main(){
 
             displayPatientBill(totalPatients);
             savePatientRecord(totalPatients);
+            saveBedStatus();
             totalPatients++;
    }
 
@@ -862,3 +866,52 @@ int main(){
     fclose(file);
     }
 
+    void saveBedStatus()
+   {
+    FILE *file;
+
+    file = fopen("beds_status.txt", "w");
+
+    if(file == NULL)
+    {
+        printf("\nError: Could not save bed status.\n");
+        return;
+    }
+
+    for(int i = 0; i < TOTAL_WARDS; i++)
+    {
+        for(int j = 0; j < BEDS_PER_WARD; j++)
+        {
+            fprintf(file, "%d ", bedOccupancy[i][j]);
+        }
+
+        fprintf(file, "\n");
+    }
+
+    fclose(file);
+   }
+
+  void loadBedStatus()
+  {
+    FILE *file;
+
+    file = fopen("beds_status.txt", "r");
+
+    if(file == NULL)
+    {
+        return;
+    }
+
+    for(int i = 0; i < TOTAL_WARDS; i++)
+    {
+        for(int j = 0; j < BEDS_PER_WARD; j++)
+        {
+            if(fscanf(file, "%d", &bedOccupancy[i][j]) != 1)
+            {
+                bedOccupancy[i][j] = 0;
+            }
+        }
+    }
+
+    fclose(file);
+  }
