@@ -734,8 +734,6 @@ int main(){
          totalRevenue += finalPayableAmounts[i];
          totalDiscounts += discounts[i];
      }
-    printf("\nTotal Revenue Earned : LKR %.2f\n", totalRevenue);
-    printf("Total Discounts Granted : LKR %.2f\n", totalDiscounts);
 
     printf("\n========================================\n");
     printf("       PERFORMANCE REPORT\n");
@@ -747,6 +745,11 @@ int main(){
     printf("Level 3 (Critical) : %d\n", criticalCount);
     printf("Level 2 (Urgent)   : %d\n", urgentCount);
     printf("Level 1 (Normal)   : %d\n", normalCount);
+    printf("\nTotal Revenue Earned : LKR %.2f\n",
+            totalRevenue);
+
+    printf("Total Discounts Granted : LKR %.2f\n",
+            totalDiscounts);
 
     printf("========================================\n");
 
