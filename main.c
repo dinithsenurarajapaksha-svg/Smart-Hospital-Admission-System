@@ -318,21 +318,27 @@ int main(){
        } while(admissionDays[totalPatients] <= 0);
 
 
-        assignedBeds[totalPatients] =
-        assignBed(assignedWards[totalPatients]);
+       assignedBeds[totalPatients] =
+                        assignBed(assignedWards[totalPatients]);
 
-    if(assignedBeds[totalPatients] == -1)
+     if(assignedBeds[totalPatients] == -1)
      {
-        printf("No available bed in this ward.\n");
-        assignedBeds[totalPatients] = 0;
-      }
+        printf("\nNo available bed in the selected ward.\n");
+        printf("Patient will be registered as an outpatient.\n");
 
-       wardCosts[totalPatients] =
-            calculateWardCost(
-            assignedWards[totalPatients],
-            admissionDays[totalPatients]);
-
-        }
+           assignedBeds[totalPatients] = 0;
+           assignedWards[totalPatients] = 0;
+           admissionDays[totalPatients] = 0;
+           wardCosts[totalPatients] = 0.0;
+       }
+   else
+      {
+        wardCosts[totalPatients] =
+                     calculateWardCost(
+                     assignedWards[totalPatients],
+                     admissionDays[totalPatients]);
+       }
+    }
    else
     {
       assignedWards[totalPatients] = 0;
