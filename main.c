@@ -65,6 +65,7 @@ float calculateFinalPayable(float grossTotal, float discount);
 void displayPatientBill(int patientIndex);
 void displayPatientsByPriority();
 void generatePerformanceReport();
+void savePatientRecord(int patientIndex);
 
 int main(){
         int choice ;
@@ -398,8 +399,8 @@ int main(){
                 finalPayableAmounts[totalPatients]);
 
             displayPatientBill(totalPatients);
-
-         totalPatients++;
+            savePatientRecord(totalPatients);
+            totalPatients++;
    }
 
    void viewPatients()
@@ -798,4 +799,66 @@ int main(){
               finalPayableAmounts[highestPatientIndex]);
      }
   }
+  void savePatientRecord(int patientIndex)
+  {
+    FILE *file;
+
+    file = fopen("patient_records.txt", "a");
+
+    if(file == NULL)
+       {
+        printf("\nError: Could not open patient_records.txt\n");
+        return;
+        }
+
+    int specialtyIndex = specialties[patientIndex] - 1;
+
+    fprintf(file, "========================================\n");
+    fprintf(file, "Patient ID: PAT-%d\n",
+            patientIDs[patientIndex]);
+
+    fprintf(file, "Patient Name: %s\n",
+            patientNames[patientIndex]);
+
+    fprintf(file, "Age: %d\n",
+            patientAges[patientIndex]);
+
+    fprintf(file, "Urgency Level: %d\n",
+            urgencyLevels[patientIndex]);
+
+    fprintf(file, "Specialty: %s\n",
+            specialtyNames[specialtyIndex]);
+
+    if(assignedWards[patientIndex] != 0)
+    {
+        fprintf(file, "Ward: %s\n",
+                wardNames[assignedWards[patientIndex] - 1]);
+
+        fprintf(file, "Bed Number: %d\n",
+                assignedBeds[patientIndex]);
+
+        fprintf(file, "Admission Days: %d\n",
+                admissionDays[patientIndex]);
+    }
+    else
+    {
+        fprintf(file, "Ward: Outpatient / OPD\n");
+    }
+
+    fprintf(file, "Gross Total: LKR %.2f\n",
+            grossTotals[patientIndex]);
+
+    fprintf(file, "Discount: LKR %.2f\n",
+            discounts[patientIndex]);
+
+    fprintf(file, "Final Payable: LKR %.2f\n",
+            finalPayableAmounts[patientIndex]);
+
+    fprintf(file, "Waiting Time: %.2f minutes\n",
+            waitingTimes[patientIndex]);
+
+    fprintf(file, "========================================\n\n");
+
+    fclose(file);
+    }
 
