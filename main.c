@@ -8,6 +8,7 @@
 #define BEDS_PER_WARD 20
 
 int totalPatients = 0;
+int nextPatientID = 1001;
 
 int bedOccupancy[TOTAL_WARDS][BEDS_PER_WARD];
 int assignedBeds[MAX_PATIENTS];
@@ -51,6 +52,7 @@ void registerPatient();
 void viewPatients();
 void searchPatient();
 void viewBedStatus();
+int findNextPatientID();
 
 int assignBed(int wardID);
 
@@ -75,6 +77,7 @@ int main(){
         initializeSpecialties();
         initializeWards();
         loadBedStatus();
+        nextPatientID = findNextPatientID();
 
         do
      {
@@ -215,7 +218,7 @@ int main(){
           printf("\nHospital is full! Cannot register more patients.\n");
           return ;
       }
-       patientIDs[totalPatients] = 1001 + totalPatients;
+       patientIDs[totalPatients] = nextPatientID;
 
        printf("Enter Patient Name : ");
        scanf(" %49[^\n]", patientNames[totalPatients]);
@@ -404,6 +407,7 @@ int main(){
             displayPatientBill(totalPatients);
             savePatientRecord(totalPatients);
             saveBedStatus();
+            nextPatientID++;
             totalPatients++;
    }
 
@@ -914,4 +918,33 @@ int main(){
     }
 
     fclose(file);
+  }
+   int findNextPatientID()
+  {
+    FILE *file;
+    char line[100];
+    int savedID;
+    int highestID = 1000;
+
+    file = fopen("patient_records.txt", "r");
+
+    if(file == NULL)
+    {
+        return 1001;
+    }
+
+    while(fgets(line, sizeof(line), file) != NULL)
+    {
+        if(sscanf(line, "Patient ID: PAT-%d", &savedID) == 1)
+        {
+            if(savedID > highestID)
+            {
+                highestID = savedID;
+            }
+        }
+    }
+
+    fclose(file);
+
+    return highestID + 1;
   }
