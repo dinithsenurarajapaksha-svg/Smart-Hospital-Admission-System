@@ -71,8 +71,12 @@ void savePatientRecord(int patientIndex);
 void saveBedStatus();
 void loadBedStatus();
 
+int readIntegerInRange(const char prompt[], int minimum, int maximum);
+int readPositiveInteger(const char prompt[]);
+
 int main(){
         int choice ;
+
         initializeBeds();
         initializeSpecialties();
         initializeWards();
@@ -84,8 +88,10 @@ int main(){
         displayTitle();
         displayMenu();
 
-        scanf("%d",&choice);
-
+      choice = readIntegerInRange(
+                       "\nEnter your choice (1-7): ",
+                                1,
+                               7);
         switch(choice)
     {
     case 1:
@@ -139,7 +145,6 @@ int main(){
     printf("6. Generate Performance Reports\n");
     printf("7. Exit\n");
 
-    printf("\nEnter your choice: ");
   }
 
   void initializeBeds()
@@ -223,38 +228,22 @@ int main(){
        printf("Enter Patient Name : ");
        scanf(" %49[^\n]", patientNames[totalPatients]);
 
-       do
-     {
-        printf("Enter Patient Age (0-120): ");
-        scanf("%d", &patientAges[totalPatients]);
+      patientAges[totalPatients] =
+                readIntegerInRange(
+                     "Enter Patient Age (0-120): ",
+                                      0,
+                                     120);
 
-       if(patientAges[totalPatients] < 0 ||
-                patientAges[totalPatients] > 120)
-       {
-         printf("Invalid age! Please enter an age between 0 and 120.\n");
-        }
+       printf("\nEnter Urgency Level:\n");
+       printf("1. Normal\n");
+       printf("2. Urgent\n");
+       printf("3. Critical\n");
 
-    } while(patientAges[totalPatients] < 0 ||
-            patientAges[totalPatients] > 120);
-
-       do
-     {
-        printf("\nEnter Urgency Level:\n");
-        printf("1. Normal\n");
-        printf("2. Urgent\n");
-        printf("3. Critical\n");
-        printf("Enter your choice (1-3): ");
-
-        scanf("%d", &urgencyLevels[totalPatients]);
-
-      if(urgencyLevels[totalPatients] < 1 ||
-         urgencyLevels[totalPatients] > 3)
-      {
-         printf("Invalid urgency level! Please enter 1-3.\n");
-       }
-
-      } while(urgencyLevels[totalPatients] < 1 ||
-         urgencyLevels[totalPatients] > 3);
+       urgencyLevels[totalPatients] =
+                  readIntegerInRange(
+                     "Enter your choice (1-3): ",
+                                      1,
+                                      3);
 
         printf("\nAvailable Specialties:\n");
 
@@ -266,19 +255,11 @@ int main(){
                   consultationFees[i]);
           }
 
-        do
-          {
-            printf("Enter Specialty ID (1-4): ");
-            scanf("%d", &specialties[totalPatients]);
-
-           if(specialties[totalPatients] < 1 ||
-              specialties[totalPatients] > TOTAL_SPECIALTIES)
-           {
-                printf("Invalid Specialty ID! Please enter 1-4.\n");
-            }
-
-        } while(specialties[totalPatients] < 1 ||
-                specialties[totalPatients] > TOTAL_SPECIALTIES);
+       specialties[totalPatients] =
+                             readIntegerInRange(
+                               "Enter Specialty ID (1-4): ",
+                                                 1,
+                                                 TOTAL_SPECIALTIES);
 
         int specialtyIndex = specialties[totalPatients] - 1;
 
@@ -303,47 +284,24 @@ int main(){
 
      int admitted;
 
-     do
-      {
-       printf("\nIs the patient admitted to a ward? (1-Yes, 0-No): ");
-       scanf("%d", &admitted);
-
-    if(admitted != 0 && admitted != 1)
-       {
-        printf("Invalid choice! Please enter 1 or 0.\n");
-        }
-
-     } while(admitted != 0 && admitted != 1);
+          admitted =
+                     readIntegerInRange(
+                                 "\nIs the patient admitted to a ward? (1-Yes, 0-No): ",
+                                          0,
+                                          1);
 
      if(admitted == 1)
         {
-         do
-           {
-            printf("Enter Ward ID (1-4): ");
-            scanf("%d", &assignedWards[totalPatients]);
-
-           if(assignedWards[totalPatients] < 1 ||
-              assignedWards[totalPatients] > TOTAL_WARDS)
-         {
-            printf("Invalid Ward ID! Please enter 1-4.\n");
-           }
-
-      } while(assignedWards[totalPatients] < 1 ||
-              assignedWards[totalPatients] > TOTAL_WARDS);
+         assignedWards[totalPatients] =
+                                   readIntegerInRange(
+                                               "Enter Ward ID (1-4): ",
+                                                     1,
+                                                TOTAL_WARDS);
 
 
-     do
-       {
-        printf("Enter Number of Days Admitted: ");
-        scanf("%d", &admissionDays[totalPatients]);
-
-        if(admissionDays[totalPatients] <= 0)
-         {
-            printf("Invalid number of days! Please enter a positive value.\n");
-         }
-
-       } while(admissionDays[totalPatients] <= 0);
-
+       admissionDays[totalPatients] =
+                              readPositiveInteger(
+                                          "Enter Number of Days Admitted: ");
 
        assignedBeds[totalPatients] =
                         assignBed(assignedWards[totalPatients]);
@@ -493,8 +451,9 @@ int main(){
     int searchID;
     int found = 0;
 
-    printf("\nEnter Patient ID to search : ");
-    scanf("%d", &searchID);
+    searchID =
+             readPositiveInteger(
+                        "\nEnter Patient ID to search: ");
 
     for(int i = 0; i < totalPatients; i++)
     {
@@ -947,4 +906,81 @@ int main(){
     fclose(file);
 
     return highestID + 1;
+  }
+
+  int readIntegerInRange(const char prompt[],
+                       int minimum,
+                       int maximum)
+  {
+    int value;
+    int clearInput;
+
+    while(1)
+    {
+        printf("%s", prompt);
+
+        if(scanf("%d", &value) != 1)
+        {
+            printf("Invalid input! Please enter a number.\n");
+
+            while((clearInput = getchar()) != '\n' &&
+                  clearInput != EOF)
+            {
+                /* Clear invalid input */
+            }
+        }
+        else
+        {
+            while((clearInput = getchar()) != '\n' &&
+                  clearInput != EOF)
+            {
+                /* Clear remaining characters */
+            }
+
+            if(value >= minimum && value <= maximum)
+            {
+                return value;
+            }
+
+            printf("Invalid choice! Please enter a number from %d to %d.\n",
+                   minimum, maximum);
+        }
+    }
+  }
+
+   int readPositiveInteger(const char prompt[])
+  {
+    int value;
+    int clearInput;
+
+    while(1)
+    {
+        printf("%s", prompt);
+
+        if(scanf("%d", &value) != 1)
+        {
+            printf("Invalid input! Please enter a positive number.\n");
+
+            while((clearInput = getchar()) != '\n' &&
+                  clearInput != EOF)
+            {
+                /* Clear invalid input */
+            }
+        }
+        else
+        {
+            while((clearInput = getchar()) != '\n' &&
+                  clearInput != EOF)
+            {
+                /* Clear remaining characters */
+            }
+
+            if(value > 0)
+            {
+                return value;
+            }
+
+            printf("Invalid input! Please enter a positive number.\n");
+        }
+    }
   }
