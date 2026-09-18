@@ -23,7 +23,6 @@ int assignedWards[MAX_PATIENTS];
 
 int admissionDays[MAX_PATIENTS];
 
-float finalBills[MAX_PATIENTS];
 float waitingTimes[MAX_PATIENTS];
 float emergencySurcharges[MAX_PATIENTS];
 float wardCosts[MAX_PATIENTS];
